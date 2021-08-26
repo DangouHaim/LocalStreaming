@@ -44,17 +44,25 @@ namespace LocalStreamingApp
         private void Connect()
         {
             Content = _layout;
-            var client = new TcpClient("192.168.43.134", 5858);
-            var clientStream = client.GetStream();
-            IFormatter formatter = new BinaryFormatter();
-            byte[] data;
 
             Task.Run(() =>
             {
-                while (true)
+                while(true)
                 {
-                    data = (byte[])formatter.Deserialize(clientStream);
-                    ScreenImage = ImageSource.FromStream(() => new MemoryStream(data));
+                    try
+                    {
+                        var client = new TcpClient("192.168.43.134", 5858);
+                        var clientStream = client.GetStream();
+                        IFormatter formatter = new BinaryFormatter();
+                        byte[] data;
+
+                        while (true)
+                        {
+                            data = (byte[])formatter.Deserialize(clientStream);
+                            ScreenImage = ImageSource.FromStream(() => new MemoryStream(data));
+                        }
+                    }
+                    catch { }
                 }
             });
 

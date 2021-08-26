@@ -71,7 +71,7 @@ namespace LocalStreaming
                 {
                     while (true)
                     {
-                        Task.Delay(10000).Wait();
+                        Task.Delay(3000).Wait();
                         if (checkedFramesCount == totalFramesCount)
                         {
                             Process.Start(Process.GetCurrentProcess().ProcessName);
