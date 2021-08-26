@@ -34,6 +34,7 @@ namespace LocalStreaming
                 int checkedFramesCount = 0;
                 var time = new Stopwatch();
                 int lastSecondsCount = 0;
+                int totalFramesCount = 0;
                 time.Start();
 
                 Console.WriteLine("Connected");
@@ -45,6 +46,7 @@ namespace LocalStreaming
                         formatter.Serialize(clientStream, data);
 
                         framesCount++;
+                        totalFramesCount++;
                         if (time.Elapsed.Seconds > 0)
                         {
                             if(lastSecondsCount != time.Elapsed.Seconds)
@@ -70,12 +72,12 @@ namespace LocalStreaming
                     while (true)
                     {
                         Task.Delay(10000).Wait();
-                        if (checkedFramesCount == framesCount)
+                        if (checkedFramesCount == totalFramesCount)
                         {
                             Process.Start(Process.GetCurrentProcess().ProcessName);
                             Environment.Exit(0);
                         }
-                        checkedFramesCount = framesCount;
+                        checkedFramesCount = totalFramesCount;
                         checksCount++;
 
                         if (checksCount % 10 == 0)
