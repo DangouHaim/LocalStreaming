@@ -17,6 +17,7 @@ namespace LocalStreaming
 {
     class Program
     {
+        private static TcpClient _client = null;
         static void Main(string[] args)
         {
             try
@@ -25,8 +26,8 @@ namespace LocalStreaming
 
                 TcpListener server = new TcpListener(IPAddress.Any, 5858);
                 server.Start();
-                var client = server.AcceptTcpClient();
-                var clientStream = client.GetStream();
+                _client = server.AcceptTcpClient();
+                var clientStream = _client.GetStream();
                 IFormatter formatter = new BinaryFormatter();
 
                 var screenStateLogger = new ScreenStateLogger();
@@ -71,13 +72,7 @@ namespace LocalStreaming
                 {
                     while (true)
                     {
-                        Task.Delay(3000).Wait();
-                        if (checkedFramesCount == totalFramesCount)
-                        {
-                            Process.Start(Process.GetCurrentProcess().ProcessName);
-                            Environment.Exit(0);
-                        }
-                        checkedFramesCount = totalFramesCount;
+                        Task.Delay(1000).Wait();
                         checksCount++;
 
                         if (checksCount % 10 == 0)

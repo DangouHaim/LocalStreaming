@@ -166,6 +166,8 @@ namespace LocalStreaming
                             {
                                 Trace.TraceError(e.Message);
                                 Trace.TraceError(e.StackTrace);
+                                Process.Start(Process.GetCurrentProcess().ProcessName);
+                                Environment.Exit(0);
                             }
                         }
                     }
