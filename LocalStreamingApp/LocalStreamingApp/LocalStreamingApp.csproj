@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <AssemblyVersion>1.0.0.103</AssemblyVersion>
-    <FileVersion>1.0.0.103</FileVersion>
+    <AssemblyVersion>1.0.0.105</AssemblyVersion>
+    <FileVersion>1.0.0.105</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

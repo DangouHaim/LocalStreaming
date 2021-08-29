@@ -17,7 +17,7 @@ namespace LocalStreamingApp
     {
         private RelativeLayout _layout = new RelativeLayout();
 
-        private int _framesOnScreen = 3;
+        private int _framesOnScreen = 4;
 
         private static ImageSource _screenImage { get; set; }
         public static ImageSource ScreenImage
