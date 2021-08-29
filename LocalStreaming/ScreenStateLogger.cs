@@ -90,10 +90,49 @@ namespace LocalStreaming
             };
             var screenTexture = new Texture2D(device, textureDesc);
 
+            void Init()
+            {
+                factory = new Factory1();
+                //Get first adapter
+                adapter = factory.GetAdapter1(0);
+                //Get device from adapter
+                device = new SharpDX.Direct3D11.Device(adapter);
+                //Get front buffer of the adapter
+                output = adapter.GetOutput(0);
+                output1 = output.QueryInterface<Output1>();
+
+                // Width/Height of desktop to capture
+                width = output.Description.DesktopBounds.Right;
+                height = output.Description.DesktopBounds.Bottom;
+
+                imageCodecInfo = GetEncoderInfo("image/jpeg");
+                encoder = Encoder.Quality;
+                encoderParameters = new EncoderParameters(1);
+                encoderParameter = new EncoderParameter(encoder, 50L);
+                encoderParameters.Param[0] = encoderParameter;
+
+                // Create Staging texture CPU-accessible
+                textureDesc = new Texture2DDescription
+                {
+                    CpuAccessFlags = CpuAccessFlags.Read,
+                    BindFlags = BindFlags.None,
+                    Format = Format.B8G8R8A8_UNorm,
+                    Width = width,
+                    Height = height,
+                    OptionFlags = ResourceOptionFlags.None,
+                    MipLevels = 1,
+                    ArraySize = 1,
+                    SampleDescription = { Count = 1, Quality = 0 },
+                    Usage = ResourceUsage.Staging
+                };
+                screenTexture = new Texture2D(device, textureDesc);
+            }
+
             Task.Factory.StartNew(() =>
             {
+                OutputDuplication duplicatedOutput;
                 // Duplicate the output
-                using (var duplicatedOutput = output1.DuplicateOutput(device))
+                using (duplicatedOutput = output1.DuplicateOutput(device))
                 {
                     while (_run)
                     {
@@ -166,8 +205,12 @@ namespace LocalStreaming
                             {
                                 Trace.TraceError(e.Message);
                                 Trace.TraceError(e.StackTrace);
-                                Process.Start(Process.GetCurrentProcess().ProcessName);
-                                Environment.Exit(0);
+                                try
+                                {
+                                    Init();
+                                    duplicatedOutput = output1.DuplicateOutput(device);
+                                }
+                                catch { }
                             }
                         }
                     }
