@@ -7,7 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalStreaming", "LocalStre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalStreamingApp.Android", "LocalStreamingApp\LocalStreamingApp.Android\LocalStreamingApp.Android.csproj", "{DCC54045-EB56-49AC-82BC-CE03AB3CB2EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalStreamingApp", "LocalStreamingApp\LocalStreamingApp\LocalStreamingApp.csproj", "{A26391DF-43A9-4289-BD90-0A9BFF43518A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocalStreamingApp", "LocalStreamingApp\LocalStreamingApp\LocalStreamingApp.csproj", "{A26391DF-43A9-4289-BD90-0A9BFF43518A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressApi", "AddressApi\AddressApi.csproj", "{866ABCCF-36EC-4472-B19C-0E1CFFCACAB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{A26391DF-43A9-4289-BD90-0A9BFF43518A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A26391DF-43A9-4289-BD90-0A9BFF43518A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A26391DF-43A9-4289-BD90-0A9BFF43518A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{866ABCCF-36EC-4472-B19C-0E1CFFCACAB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{866ABCCF-36EC-4472-B19C-0E1CFFCACAB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{866ABCCF-36EC-4472-B19C-0E1CFFCACAB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{866ABCCF-36EC-4472-B19C-0E1CFFCACAB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

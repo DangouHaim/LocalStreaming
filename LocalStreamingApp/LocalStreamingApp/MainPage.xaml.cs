@@ -9,12 +9,17 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Xamarin.Forms;
 
 namespace LocalStreamingApp
 {
-    public partial class MainPage : ContentPage, INotifyPropertyChanged
+    public partial class MainPage : ContentPage
     {
+        private const string AddressApiUrl = "https://bsite.net/dangou/api/address";
+
+        private bool _remote = false;
+
         private RelativeLayout _layout = new RelativeLayout();
 
         private int _framesOnScreen = 4;
@@ -47,11 +52,13 @@ namespace LocalStreamingApp
 
             Task.Run(() =>
             {
-                while(true)
+                while (true)
                 {
                     try
                     {
-                        var client = new TcpClient("192.168.43.134", 5858);
+                        string ipAddress = GetRemoteAddress();
+
+                        var client = new TcpClient(ipAddress, 5858);
                         var clientStream = client.GetStream();
                         IFormatter formatter = new BinaryFormatter();
                         byte[] data;
@@ -69,12 +76,16 @@ namespace LocalStreamingApp
             int framesCount = 0;
             Device.StartTimer(TimeSpan.FromMilliseconds(25), () =>
             {
-                framesCount++;
-                if (framesCount % 10 == 0)
+                try
                 {
-                    GC.Collect();
+                    framesCount++;
+                    if (framesCount % 10 == 0)
+                    {
+                        GC.Collect();
+                    }
+                    UpdateScreen();
                 }
-                UpdateScreen();
+                catch { }
 
                 return true;
             });
@@ -116,11 +127,13 @@ namespace LocalStreamingApp
             return ini;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged(string prop = "")
+        private string GetRemoteAddress()
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            WebRequest webRequest = WebRequest.Create(AddressApiUrl);
+            using(var sr = new StreamReader(webRequest.GetResponse().GetResponseStream()))
+            {
+                return sr.ReadToEnd().Replace("\"", "");
+            }
         }
     }
 }

@@ -1,28 +1,35 @@
-﻿using SharpDX;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Net;
+﻿using System;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Net.Http;
+using System.Diagnostics;
+using System.Net;
+using System.Web;
 
 namespace LocalStreaming
 {
     class Program
     {
+        [DllImport("User32.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ShowWindow([In] IntPtr hWnd, [In] int nCmdShow);
+
+        private const string AddressApiUrl = "https://bsite.net/dangou/api/address";
+
         private static TcpClient _client = null;
         static void Main(string[] args)
         {
             try
             {
                 Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
+                IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
+                ShowWindow(handle, 6);
+
+                PublishExternalIpAddress(GetExternalIpAddress());
 
                 TcpListener server = new TcpListener(IPAddress.Any, 5858);
                 server.Start();
@@ -32,10 +39,10 @@ namespace LocalStreaming
 
                 var screenStateLogger = new ScreenStateLogger();
                 int framesCount = 0;
-                int checkedFramesCount = 0;
                 var time = new Stopwatch();
                 int lastSecondsCount = 0;
                 int totalFramesCount = 0;
+                int seconds = 0;
                 time.Start();
 
                 Console.WriteLine("Connected");
@@ -55,6 +62,11 @@ namespace LocalStreaming
                                 lastSecondsCount = time.Elapsed.Seconds;
                                 Console.WriteLine($"FPS: {framesCount} Buffer size: {data.Length}");
                                 framesCount = 0;
+                                seconds++;
+                                if (seconds % 30 == 0)
+                                {
+                                    clientStream.Flush();
+                                }
                             }
                         }
                     }
@@ -88,6 +100,27 @@ namespace LocalStreaming
                 Environment.Exit(0);
             }
             Console.ReadLine();
+        }
+
+        private static void PublishExternalIpAddress(string address)
+        {
+            HttpClient client = new HttpClient();
+
+            UriBuilder builder = new UriBuilder(AddressApiUrl);
+
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            query["address"] = address;
+            builder.Query = query.ToString();
+
+            client.PostAsync(builder.ToString(), null);
+        }
+
+        private static string GetExternalIpAddress()
+        {
+            string externalIpString = new WebClient().DownloadString("http://icanhazip.com").Replace("\\r\\n", "").Replace("\\n", "").Trim();
+            var externalIp = IPAddress.Parse(externalIpString);
+
+            return externalIp.ToString();
         }
     }
 }

@@ -71,7 +71,7 @@ namespace LocalStreaming
             imageCodecInfo = GetEncoderInfo("image/jpeg");
             encoder = Encoder.Quality;
             encoderParameters = new EncoderParameters(1);
-            encoderParameter = new EncoderParameter(encoder, 50L);
+            encoderParameter = new EncoderParameter(encoder, 30L);
             encoderParameters.Param[0] = encoderParameter;
 
             // Create Staging texture CPU-accessible
